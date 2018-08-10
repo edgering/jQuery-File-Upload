@@ -553,6 +553,15 @@ class UploadHandler
     protected function get_scaled_image_file_paths($file_name, $version) {
         $file_path = $this->get_upload_path($file_name);
         if (!empty($version)) {
+		
+            // To allow change thumbnail filename
+		
+	    if (isset($this->options['image_versions'][$version])
+                 && isset($this->options['image_versions'][$version]["name"]))
+            {
+              $file_name = $this->options['image_versions'][$version]["name"];  
+            }       
+				
             $version_dir = $this->get_upload_path(null, $version);
             if (!is_dir($version_dir)) {
                 mkdir($version_dir, $this->options['mkdir_mode'], true);
@@ -1392,6 +1401,15 @@ class UploadHandler
             if ($success) {
                 foreach ($this->options['image_versions'] as $version => $options) {
                     if (!empty($version)) {
+			
+			// To allow change thumbnail filename
+			    
+                        if (isset($options["name"]))
+                        {
+                          $file_name = $options["name"];                                                           
+                        }
+			    
+			    
                         $file = $this->get_upload_path($file_name, $version);
                         if (is_file($file)) {
                             unlink($file);
